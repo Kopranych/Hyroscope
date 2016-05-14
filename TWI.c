@@ -1,9 +1,11 @@
 #include "TWI.h"
 
+
 void I2C_init()
 {
 	TWBR = 0x20;// скорость передачи при 8м√ц получаетс€ 100к√ц
 }
+
 
 void I2C_start()
 {
@@ -11,10 +13,12 @@ void I2C_start()
 	while(!(TWCR&(1<<TWINT))); //ждем установку бита TWIN
 }
 
+
 void I2C_stop()
 {
 	TWCR = (1<<TWSTO)|(1<<TWINT)|(1<<TWEN);
 }
+
 
 int I2C_tranciv_byte(unsigned char byte)
 {
@@ -27,6 +31,7 @@ int I2C_tranciv_byte(unsigned char byte)
 	}
 	return 0;
 }
+
 
 unsigned char I2C_receiver_byte()
 {
