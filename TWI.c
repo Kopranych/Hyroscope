@@ -25,11 +25,11 @@ int I2C_tranciv_byte(unsigned char byte)
 	TWDR = byte; //записали данные в регистр передачи данных
 	TWCR = (1<<TWINT)|(1<<TWEN);//запустили передачу данных
 	while(!(TWCR&(1<<TWINT))); //ждем установку бита TWIN
-	if((TWSR & 0xF8)!= TW_MT_DATA_ACK)
+	if((TWSR & 0xF8)!= TW_MT_DATA_ACK)//проверяем данные регистра статуса
 	{
-		return 1;
+		return 0;//если данные неверны возвращаем 0
 	}
-	return 0;
+	return 1;//если верны 1
 }
 
 
@@ -46,11 +46,10 @@ unsigned char I2C_receiver_byte()
 
 unsigned char I2C_receiver_last_byte()
 {
-	int err = 0;
+
 	TWCR = (1<<TWINT)|(1<<TWEN);// включили прием данных
 	while(!(TWCR&(1<<TWINT))); //ждем установку бита TWIN
-	if((TWSR & 0xF8)!= TW_MR_DATA_NACK) err = 1;
-	else err = 0;
+
 	return TWDR;
 }
 

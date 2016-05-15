@@ -2,7 +2,7 @@
 #include <avr/interrupt.h>
 
 ///////макросы для инициализации UART////////////////////
-#define F_CPU 8000000L
+//#define F_CPU 8000000L
 #define XTAL 8000000L
 #define baudrate 9600L
 #define bauddivider (XTAL/(16*baudrate)-1)
