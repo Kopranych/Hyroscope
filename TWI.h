@@ -14,6 +14,7 @@
 #define TW_MR_DATA_NACK    0x58//ведущий принял последний байт и передал NACK
 #define MPU_6050_ADDRESS_W 0xD0//адрес гироскопа в режиме записи
 #define MPU_6050_ADDRESS_R 0xD1//адрес гироскопа в режиме чтения
+#define PWR_MGMT_1         0x6B
 #define TEMP_OUT_H         0x41//адрес старшего байта реистра измерения температуры
 #define TEMP_OUT_L         0x42//адрес младшего байта реистра измерения температуры
 #define ACCEL_XOUT_H       0x3B//адрес старшего байта реистра измерения X акселерометра
@@ -41,5 +42,6 @@ int I2C_tranciv_byte(unsigned char byte); // передача данных
 unsigned char I2C_receiver_byte();// прием данных
 unsigned char I2C_receiver_last_byte();// прием последнего байта
 unsigned char get_status();//читаем статусный регистр
-unsigned char MPU_I2C_R(unsigned char w,unsigned char x, unsigned char r);//протокол чтения данных из модуля MPU-6050
+unsigned char MPU_I2C_R(unsigned char addrw,unsigned char ra, unsigned char addrr);//протокол чтения данных из модуля MPU-6050
+unsigned char MPU_I2C_W(unsigned char addrw,unsigned char ra, unsigned char data);//протокол записи
 /////////////////////////////////////////////////////////////////////////////////////////////////////

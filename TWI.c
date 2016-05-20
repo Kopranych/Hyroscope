@@ -60,15 +60,30 @@ unsigned char get_status()
 	return status;
 }
 
-unsigned char MPU_I2C_R(unsigned char w,unsigned char x, unsigned char r)
+unsigned char MPU_I2C_R(unsigned char addrw,unsigned char ra, unsigned char addrr)
+{
+	char data;
+	I2C_start();//отправляем условие СТАРТ
+	I2C_tranciv_byte(addrw);//отправляем адрес модуля на запись
+	I2C_tranciv_byte(ra);//отправляем адрес регистра откуда будем читать данные
+	I2C_start();//отправляем повторный СТАРТ
+	I2C_tranciv_byte(addrr);//отправляем адрес модуля на чтение
+	data = I2C_receiver_last_byte();//читаем данные из регистра
+	I2C_stop();//отправляем условие СТОП
+	return data;
+}
+
+unsigned char MPU_I2C_W(unsigned char addrw,unsigned char ra, unsigned char data)
+{
+	I2C_start();//отправляем условие СТАРТ
+	I2C_tranciv_byte(addrw);//отправляем адрес модуля на запись
+	I2C_tranciv_byte(ra);//отправляем адрес регистра куда будем записывать данные
+	I2C_tranciv_byte(data);//записываем данные
+	I2C_stop();//отправляем условие СТОП
+	if((TWSR&0xF8)!=TW_MT_DATA_ACK)
 	{
-		char a;
-		I2C_start();//отправляем условие СТАРТ
-		I2C_tranciv_byte(w);//отправляем адрес модуля на запись
-		I2C_tranciv_byte(x);//отправляем адрес регистра откуда будем читать данные
-		I2C_start();//отправляем повторный СТАРТ
-		I2C_tranciv_byte(r);//отправляем адрес модуля на чтение
-		a = I2C_receiver_last_byte();//читаем данные из регистра
-		I2C_stop();//отправляем условие СТОП
-		return a;
+		 return 0;
 	}
+	else
+	return 1;
+}

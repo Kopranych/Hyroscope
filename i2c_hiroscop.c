@@ -64,7 +64,7 @@ void main()
 {
 	UART_init(bauddivider);// инициализация UART
 	I2C_init();// инициализация шины TWI
-	
+	MPU_I2C_W(MPU_6050_ADDRESS_W,PWR_MGMT_1, 0x00);
 //	_delay_ms(1);
 	
 		DDRD = 1<<PD5|1<<PD4;
@@ -75,7 +75,7 @@ void main()
 	{
 		
 		PORTD = 1<<PD5;
-//		_delay_ms(1);	
+		_delay_ms(1000);	
 		PORTD = 0<<PD5;			
 
 ////////////////////////////читаем показания акселерометра X,Y,Z и передаем их по UART///////
@@ -106,8 +106,9 @@ void main()
 		UART_transiever(MPU_I2C_R(MPU_6050_ADDRESS_W,TEMP_OUT_L, MPU_6050_ADDRESS_R));
 /////////////////////////////////////////////////////////////////////////////////////////////
 		PORTD = 1<<PD4;
-//		_delay_ms(1000);	
+		_delay_ms(500);	
 		PORTD = 0<<PD4;
+		_delay_ms(500);	
 					
 	}
 }
