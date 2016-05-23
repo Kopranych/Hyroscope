@@ -16,3 +16,4 @@
 void UART_init(unsigned int bit_rate);// инициализация UART
 char UART_transiever(unsigned char tx);// передача данных по UART
 char UART_reciever();//прием данных по UART
+char UART_write(char * p);

@@ -32,4 +32,13 @@ char UART_transiever(unsigned char tx)
 	return 0;
 }
 
+char UART_write(char *p)
+{
+	while(*p)
+	{
+		while (!(UCSRA & (1<<UDRE)));//ждем пока регистр данных очистится
+		UDR = *p++;//передаем байт данных
+	}
+	return 0;
+}
 

@@ -5,6 +5,7 @@
 #include "TWI.h"
 #include "UART.h"
 #include <util/delay.h>
+#include <stdio.h>
 
 ISR(TWI_vect)
 {
@@ -64,8 +65,14 @@ void main()
 {
 	UART_init(bauddivider);// инициализация UART
 	I2C_init();// инициализация шины TWI
-	MPU_I2C_W(MPU_6050_ADDRESS_W,PWR_MGMT_1, 0x00);
 //	_delay_ms(1);
+	printf("/r/n");
+	UDR = '/n';
+	char arr[] = "trre";
+	UART_write(arr);
+
+	MPU_I2C_W(MPU_6050_ADDRESS_W,PWR_MGMT_1, 0x00);
+
 	
 		DDRD = 1<<PD5|1<<PD4;
 		PORTD = 0<<PB5|0<<PB4;
@@ -104,6 +111,9 @@ void main()
 ////////////////////////////читаем показания термометра и передаем их по UART////////////////
 		UART_transiever(MPU_I2C_R(MPU_6050_ADDRESS_W,TEMP_OUT_H, MPU_6050_ADDRESS_R));
 		UART_transiever(MPU_I2C_R(MPU_6050_ADDRESS_W,TEMP_OUT_L, MPU_6050_ADDRESS_R));
+		
+
+		
 /////////////////////////////////////////////////////////////////////////////////////////////
 		PORTD = 1<<PD4;
 		_delay_ms(500);	
