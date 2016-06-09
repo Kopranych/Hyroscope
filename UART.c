@@ -28,17 +28,42 @@ char UART_reciever()
 char UART_transiever(unsigned char tx)
 {
 	while (!(UCSRA & (1<<UDRE)));//ждем пока регистр данных очистится
-	UDR = tx;//передаем байт данных
+ 	UDR = tx;//передаем байт данных
 	return 0;
 }
 
 char UART_write(char *p)
 {
-	while(*p)
+	while(*p!='\0')
 	{
 		while (!(UCSRA & (1<<UDRE)));//ждем пока регистр данных очистится
-		UDR = *p++;//передаем байт данных
+		char temp = *p;
+		p++;
+		UDR = temp;//передаем байт данных
+	
 	}
 	return 0;
 }
+
+char UART_transiever_itoa(unsigned char tx)//функция переводит число в строку и выводит в UART
+{	
+	char buf[20];
+	itoa(tx, buf, 10);
+	UART_write(buf);
+	return 0;
+}
+
+
+/*char UART_write(char *p)
+{
+	int i = strlen(p);
+	int t;
+	for(t = 0; t<i;t++)
+	{
+		while (!(UCSRA & (1<<UDRE)));//ждем пока регистр данных очистится
+		UDR = p[t];
+	}
+	return 0;
+}*/
+
 
