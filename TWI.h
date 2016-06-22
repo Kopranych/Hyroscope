@@ -4,6 +4,7 @@
 ////////////////////////////////////////ПЕРЕОПРЕДЕЛЕНИЯ/////////////////////////////////////////////
 #define TW_BUS_FAIL        0x00//аппаратная ошибка шины
 #define TW_START    	   0x08//отправлено условие старт
+#define ReStart			   0x10//
 #define TW_MT_AD_ACK       0x18//ведущий послал адрес ведомого с битом для записи ведомый отозвался
 #define TW_MT_AD_NACK      0x20//ведущий послал адрес ведомого с битом для записи ведомый не отозвался
 #define TW_MT_DATA_ACK     0x28//ведущий послал данные и принял подтверждение 
@@ -29,6 +30,9 @@
 #define GYRO_YOUT_L        0x46//адрес младшего байта реистра измерения Y гироскопа
 #define GYRO_ZOUT_H        0x47//адрес старшего байта реистра измерения Z гироскопа
 #define GYRO_ZOUT_L        0x48//адрес младшего байта реистра измерения Z гироскопа
+#define XA_TEST			   0x0D//
+#define YA_TEST			   0x0E//
+#define ZA_TEST			   0x0F//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -39,9 +43,9 @@ void I2C_init();// инициализация шины I2c просто задаем нужную скорость
 void I2C_start();  // Генерация условия СТАРТ
 void I2C_stop(); // Генерация условия стоп
 int I2C_tranciv_byte(unsigned char byte); // передача данных
-unsigned char I2C_receiver_byte();// прием данных
-unsigned char I2C_receiver_last_byte();// прием последнего байта
+char I2C_receiver_byte();// прием данных
+char I2C_receiver_last_byte();// прием последнего байта
 unsigned char get_status();//читаем статусный регистр
-unsigned char MPU_I2C_R(unsigned char addrw,unsigned char ra, unsigned char addrr);//протокол чтения данных из модуля MPU-6050
-unsigned char MPU_I2C_W(unsigned char addrw,unsigned char ra, unsigned char data);//протокол записи
+char MPU_I2C_R(unsigned char addrw,unsigned char ra, unsigned char addrr);//протокол чтения данных из модуля MPU-6050
+char MPU_I2C_W(unsigned char addrw,unsigned char ra, unsigned char data);//протокол записи
 /////////////////////////////////////////////////////////////////////////////////////////////////////

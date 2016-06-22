@@ -4,6 +4,7 @@
 void I2C_init()
 {
 	TWBR = 0x20;// скорость передачи при 8м√ц получаетс€ 100к√ц
+	MPU_I2C_W(MPU_6050_ADDRESS_W,PWR_MGMT_1, 0x00);//занул€ем регистр управлени€ питанием, без этого не читаютс€ данные
 }
 
 
@@ -33,7 +34,7 @@ int I2C_tranciv_byte(unsigned char byte)
 }
 
 
-unsigned char I2C_receiver_byte()
+char I2C_receiver_byte()
 {
 	int err = 0;
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);// включили прием данных
@@ -44,7 +45,7 @@ unsigned char I2C_receiver_byte()
 }
 
 
-unsigned char I2C_receiver_last_byte()
+char I2C_receiver_last_byte()
 {
 
 	TWCR = (1<<TWINT)|(1<<TWEN);// включили прием данных
@@ -60,7 +61,7 @@ unsigned char get_status()
 	return status;
 }
 
-unsigned char MPU_I2C_R(unsigned char addrw,unsigned char ra, unsigned char addrr)
+char MPU_I2C_R(unsigned char addrw,unsigned char ra, unsigned char addrr)
 {
 	char data;
 	I2C_start();//отправл€ем условие —“ј–“
@@ -73,7 +74,7 @@ unsigned char MPU_I2C_R(unsigned char addrw,unsigned char ra, unsigned char addr
 	return data;
 }
 
-unsigned char MPU_I2C_W(unsigned char addrw,unsigned char ra, unsigned char data)
+char MPU_I2C_W(unsigned char addrw,unsigned char ra, unsigned char data)
 {
 	I2C_start();//отправл€ем условие —“ј–“
 	I2C_tranciv_byte(addrw);//отправл€ем адрес модул€ на запись
