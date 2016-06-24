@@ -37,7 +37,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = i2c_hiroscop.o TWI.o UART.o 
+OBJECTS = i2c_hiroscop.o TWI.o UART.o LCD_HD44780.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -53,6 +53,9 @@ TWI.o: ../TWI.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 UART.o: ../UART.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+LCD_HD44780.o: ../LCD_HD44780.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link

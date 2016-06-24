@@ -7,7 +7,7 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include <stdint.h>
-
+#include "LCD_HD44780.h"
 
 	enum measure_mode
 	{
@@ -27,10 +27,11 @@
 		temperatyre_l
 	};
 	int array_adress[] =
-	{ 0x3B, 0x3C, 0x3D, 0x3E, 0x3F, 0x40, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
-			0x41, 0x42 };
+	{ ACCEL_XOUT_H, ACCEL_XOUT_L, ACCEL_YOUT_H, ACCEL_YOUT_L, ACCEL_ZOUT_H, ACCEL_ZOUT_L, 
+	GYRO_XOUT_H, GYRO_XOUT_L, GYRO_YOUT_H, GYRO_YOUT_L, GYRO_ZOUT_H, GYRO_ZOUT_L,
+			TEMP_OUT_H, TEMP_OUT_L };
 	enum measure_mode current = accel_xh;
-	char data;
+	char data[15];
 
 ISR(TWI_vect)
 {
@@ -48,6 +49,7 @@ ISR(TWI_vect)
 		case TW_START:
 
 			cli();
+
 			I2C_tranciv_byte(MPU_6050_ADDRESS_W);		
 			sei();
 
@@ -56,7 +58,7 @@ ISR(TWI_vect)
 		case ReStart:
 
 			cli();
-			I2C_tranciv_byte(MPU_6050_ADDRESS_W);
+			I2C_tranciv_byte(MPU_6050_ADDRESS_R);
 			sei();
 
 			break;
@@ -64,10 +66,12 @@ ISR(TWI_vect)
 		case TW_MT_AD_ACK:
 			
 			cli();
-			int reg_adress = array_adress[(int)current];
+			DDRD = 1<<PD7;
+			PORTD = 1<<PD7;
+			unsigned char reg_adress = array_adress[(int)current];
+			
 			I2C_tranciv_byte(reg_adress);
 			sei();
-
 			break;
 
 		case TW_MT_AD_NACK:
@@ -89,7 +93,7 @@ ISR(TWI_vect)
 		case TW_MR_AD_ACK:
 
 			cli();
-			data = I2C_receiver_last_byte();			
+			data[(int)current] = I2C_receiver_last_byte();			
 			sei();
 
 			break;
@@ -106,12 +110,52 @@ ISR(TWI_vect)
 
 			cli();
 			I2C_stop();
-
+			char buffer[4];
 			if(current == temperatyre_l)
-				
+			{	
+				DDRB = 1<<PB3;
+				PORTB = 1<<PB3;
 				current = accel_xh;
+				int16_t ACCEL_X = data[(int)accel_xh]<<8|data[(int)accel_xl];
+				int16_t ACCEL_Y = data[(int)accel_yh]<<8|data[(int)accel_yl];
+				int16_t ACCEL_Z = data[(int)accel_zh]<<8|data[(int)accel_zl];
+				int16_t GYRO_X = data[(int)hyro_xh]<<8|data[(int)hyro_xl];
+				int16_t GYRO_Y = data[(int)hyro_yh]<<8|data[(int)hyro_yl];
+				int16_t GYRO_Z = data[(int)hyro_zh]<<8|data[(int)hyro_zl];
+				int16_t TEMPERATURE = data[(int)temperature_h]<<8|data[(int)temperatyre_l];
+				TEMPERATURE = TEMPERATURE/340+36;
+
+				kursor_adress(FIRST);
+				LCD_write_str("A:000 000 000 t=");
+				itoa(ACCEL_X, buffer, 10);
+				kursor_adress(THIRD);
+				LCD_write_str(buffer);
+				itoa(ACCEL_Y, buffer, 10);
+				kursor_adress(SEVENTH);
+				LCD_write_str(buffer);
+				itoa(ACCEL_Z, buffer, 10);
+				kursor_adress(ELEVENTH);
+				LCD_write_str(buffer);
+
+				kursor_adress(SEC_LINE);
+				LCD_write_str("H:000 000 000 000");
+				itoa(GYRO_X, buffer, 10);
+				kursor_adress(THIRD_S);
+				LCD_write_str(buffer);
+				itoa(GYRO_Y, buffer, 10);
+				kursor_adress(SEVENTH_S);
+				LCD_write_str(buffer);
+				itoa(GYRO_Z, buffer, 10);
+				kursor_adress(ELEVENTH_S);
+				LCD_write_str(buffer);
+				itoa(TEMPERATURE, buffer, 10);
+				kursor_adress(FIFTEENTH_S);
+				LCD_write_str(buffer);
+				_delay_ms(40);
+			}
 				else current++;
-			
+
+
 			I2C_start();
 			sei();
 
@@ -124,8 +168,9 @@ ISR(TWI_vect)
 
 int main()
 {
-	UART_init(bauddivider);// инициализация UART
+//	UART_init(bauddivider);// инициализация UART
 	I2C_init();// инициализация шины TWI
+	LCD_init();
 //	_delay_ms(1);	
 	DDRD = 1<<PD5|1<<PD4;
 	PORTD = 0<<PD5|0<<PD4;
@@ -144,10 +189,10 @@ int main()
 	{
 		
 
-/*		PORTD = 1<<PD5;
+		PORTD = 1<<PD5;
 		_delay_ms(1000);	
 		PORTD = 0<<PD5;			
-		
+/*			
 		int X_TEST = MPU_I2C_R(MPU_6050_ADDRESS_W,XA_TEST,MPU_6050_ADDRESS_R);
 		int Y_TEST = MPU_I2C_R(MPU_6050_ADDRESS_W,YA_TEST,MPU_6050_ADDRESS_R);
 		int Z_TEST = MPU_I2C_R(MPU_6050_ADDRESS_W,ZA_TEST,MPU_6050_ADDRESS_R);
@@ -212,11 +257,11 @@ int main()
 		UART_write("\r\n");
 	
 /////////////////////////////////////////////////////////////////////////////////////////////
-		PORTD = 1<<PD4;
+*/		PORTD = 1<<PD4;
 		_delay_ms(500);
 		PORTD = 0<<PD4;
 		_delay_ms(500);
-*/					
+					
 	}
 	return 0;
 }

@@ -10,21 +10,21 @@ void I2C_init()
 
 void I2C_start()
 {
-	TWCR = (1<<TWSTA)|(1<<TWINT)|(1<<TWEN);
+	TWCR = (1<<TWSTA)|(1<<TWINT)|(1<<TWEN)|(1<<TWIE);
 	while(!(TWCR&(1<<TWINT))); //ждем установку бита TWIN
 }
 
 
 void I2C_stop()
 {
-	TWCR = (1<<TWSTO)|(1<<TWINT)|(1<<TWEN);
+	TWCR = (1<<TWSTO)|(1<<TWINT)|(1<<TWEN)|(1<<TWIE);
 }
 
 
 int I2C_tranciv_byte(unsigned char byte)
 {
 	TWDR = byte; //записали данные в регистр передачи данных
-	TWCR = (1<<TWINT)|(1<<TWEN);//запустили передачу данных
+	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWIE);//запустили передачу данных
 	while(!(TWCR&(1<<TWINT))); //ждем установку бита TWIN
 	if((TWSR & 0xF8)!= TW_MT_DATA_ACK)//проверяем данные регистра статуса
 	{
@@ -37,7 +37,7 @@ int I2C_tranciv_byte(unsigned char byte)
 char I2C_receiver_byte()
 {
 	int err = 0;
-	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);// включили прием данных
+	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA)|(1<<TWIE);// включили прием данных
 	while(!(TWCR&(1<<TWINT))); //ждем установку бита TWIN
 	if((TWSR & 0xF8)!= TW_MR_DATA_ACK) err = 1;
 	else err = 0;
@@ -48,7 +48,7 @@ char I2C_receiver_byte()
 char I2C_receiver_last_byte()
 {
 
-	TWCR = (1<<TWINT)|(1<<TWEN);// включили прием данных
+	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWIE);// включили прием данных
 	while(!(TWCR&(1<<TWINT))); //ждем установку бита TWIN
 
 	return TWDR;
