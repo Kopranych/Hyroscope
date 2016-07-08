@@ -111,6 +111,9 @@ void kursor_adress(uint8_t adress)
 		LCD_write(adress, RS_COM);
 }
 
+
+
+/*
 void LCD_read_BF()
 {
 	uint8_t tmp = 0;
@@ -137,8 +140,7 @@ void LCD_read_BF()
 	tmp|=data;
 	}while((tmp &(1<<BF))!=0);		
 }
-
-
+*/
 
 
 
