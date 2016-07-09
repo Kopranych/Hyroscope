@@ -127,7 +127,7 @@ ISR(TWI_vect)
 
 int main()
 {
-	_delay_ms(100);
+//	_delay_ms(100);
 	I2C_init();// инициализаци€ шины TWI
 	
 	DDRD = 1<<PD5|1<<PD4|1<<PD7;
@@ -149,7 +149,7 @@ int main()
 		
 
 		PORTD = 1<<PD5;
-		_delay_ms(1000);	
+//		_delay_ms(1000);	
 		PORTD = 0<<PD5;			
 
 		while(Flag)
@@ -172,47 +172,54 @@ int main()
 			{
 				LCD_init();
 				kursor_adress(FIRST);
-				LCD_write_str("A:000 000 000 t=");	
+				LCD_write_str("A 0000          ");	
 				
 				kursor_adress(SEC_LINE);
-				LCD_write_str("H:000 000 000 000");	
+				LCD_write_str("H 0000          ");	
 				is_init = true;		
 			}
-
-
+/*
+				LCD_alignment(ACCEL_X, THIRD);
+//				LCD_alignment(ACCEL_Y, EIGHTH);
+//				LCD_alignment(ACCEL_Z, THIRTEENTH);
+				LCD_alignment(GYRO_X, THIRD_S);
+//				LCD_alignment(GYRO_Y, EIGHTH_S);
+//				LCD_alignment(GYRO_Z, THIRTEENTH_S);
+*/
 				itoa(ACCEL_X, buffer, 10);
 				kursor_adress(THIRD);
 				LCD_write_str(buffer);
-				itoa(ACCEL_Y, buffer, 10);
-				kursor_adress(SEVENTH);
-				LCD_write_str(buffer);
-				itoa(ACCEL_Z, buffer, 10);
-				kursor_adress(ELEVENTH);
-				LCD_write_str(buffer);
+//				itoa(ACCEL_Y, buffer, 10);
+//				kursor_adress(SEVENTH);
+//				LCD_write_str(buffer);
+//				itoa(ACCEL_Z, buffer, 10);
+//				kursor_adress(ELEVENTH);
+//				LCD_write_str(buffer);
 
 
 				itoa(GYRO_X, buffer, 10);
 				kursor_adress(THIRD_S);
 				LCD_write_str(buffer);
 				itoa(GYRO_Y, buffer, 10);
-				kursor_adress(SEVENTH_S);
-				LCD_write_str(buffer);
-				itoa(GYRO_Z, buffer, 10);
-				kursor_adress(ELEVENTH_S);
-				LCD_write_str(buffer);
-				itoa(TEMPERATURE, buffer, 10);
-				kursor_adress(FIFTEENTH_S);
-				LCD_write_str(buffer);
-				_delay_ms(40);
+//				kursor_adress(SEVENTH_S);
+//				LCD_write_str(buffer);
+//				itoa(GYRO_Z, buffer, 10);
+//				kursor_adress(ELEVENTH_S);
+//				LCD_write_str(buffer);
+//				itoa(TEMPERATURE, buffer, 10);
+//				kursor_adress(FIFTEENTH_S);
+//				LCD_write_str(buffer);
+
+//				_delay_ms(40);
 				Flag = 0;
 				I2C_start();
 				TWCR &= ~(1<<TWINT);//сброс бита TWINT перед sei() об€зателен!!!!!
 				sei();
 		}
 		PORTD = 1<<PD4;
-		_delay_ms(500);
+//		_delay_ms(500);
 		PORTD = 0<<PD4;
-		_delay_ms(500);
+//		_delay_ms(500);
 					
 	}
 	return 0;

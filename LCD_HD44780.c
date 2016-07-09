@@ -111,7 +111,52 @@ void kursor_adress(uint8_t adress)
 		LCD_write(adress, RS_COM);
 }
 
+void LCD_alignment(int16_t str, uint8_t adress)
+{	
+	uint8_t buffer[] = {' ',' ',' ',' '};
+	itoa(str, buffer, 10);
 
+	if (str < 0)
+		{
+			if (str > (-10))
+			{
+				kursor_adress(adress);
+				LCD_write_str(buffer);
+				LCD_write_str("  ");
+			}
+			else if (str > (-100))
+			{
+				kursor_adress(adress);
+				LCD_write_str(buffer);
+				LCD_write_str(" ");
+			}
+			else if (str <= (-100))
+			{
+				kursor_adress(adress);
+				LCD_write_str(buffer);
+			}
+		}
+
+		else
+		{
+			if (str < 10)
+			{
+				kursor_adress(adress);
+				LCD_write_str(buffer);
+				LCD_write_str("   ");
+			}
+			else if (str < 100)
+				kursor_adress(adress);
+				LCD_write_str(buffer);
+				LCD_write_str("  ");
+			if (str >= 100)
+			{
+				kursor_adress(adress);
+				LCD_write_str(buffer);
+				LCD_write_str(" ");
+			}
+		}
+}
 
 /*
 void LCD_read_BF()
