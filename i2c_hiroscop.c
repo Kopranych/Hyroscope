@@ -33,10 +33,10 @@
 	enum measure_mode current = accel_xh;
 	char data[15];
 	uint8_t Flag = 1;
+	uint8_t reg_adress;
 
 ISR(TWI_vect)
 {
-	cli();
 	switch(get_status())
 	{
 		case TW_BUS_FAIL://аппаратная ошибка шины
@@ -48,7 +48,7 @@ ISR(TWI_vect)
 			}*/
 		break;
 		
-		case TW_START://отправлено условие старт
+		case TW_START://отправлено условие старт(1)
 
 			
 
@@ -57,16 +57,16 @@ ISR(TWI_vect)
 
 			break;
 
-		case ReStart://отправлен повторный старт
+		case ReStart://отправлен повторный старт(4)
 
 			I2C_tranciv_byte(MPU_6050_ADDRESS_R);
 			break;
 
-		case TW_MT_AD_ACK://ведущий послал адрес ведомого с битом для записи ведомый отозвался
+		case TW_MT_AD_ACK://ведущий послал адрес ведомого с битом для записи ведомый отозвался(2)
 			
 			PORTD ^= 1<<PD7;
 //			_delay_ms(500);
-			uint8_t reg_adress = array_adress[(int)current];
+			reg_adress = array_adress[(int)current];
 			
 			I2C_tranciv_byte(reg_adress);
 
@@ -74,9 +74,11 @@ ISR(TWI_vect)
 
 		case TW_MT_AD_NACK://ведущий послал адрес ведомого с битом для записи ведомый не отозвался
 			
+			kursor_adress(FIRST);
+			LCD_write_str("ERROR SLAVE_NACK");
 			break;
 		
-		case TW_MT_DATA_ACK://ведущий послал данные и принял подтверждение 
+		case TW_MT_DATA_ACK://ведущий послал данные и принял подтверждение (3)
 
 			I2C_start();
 
@@ -86,7 +88,7 @@ ISR(TWI_vect)
 			
 			break;
 
-		case TW_MR_AD_ACK://ведущий послал адрес ведомого с битом для чтения ведомый отозвался
+		case TW_MR_AD_ACK://ведущий послал адрес ведомого с битом для чтения ведомый отозвался(5)
 
 			data[(int)current] = I2C_receiver_last_byte();			
 		
@@ -100,7 +102,7 @@ ISR(TWI_vect)
 			
 			break;
 
-		case TW_MR_DATA_NACK://ведущий принял последний байт и передал NACK
+		case TW_MR_DATA_NACK://ведущий принял последний байт и передал NACK(6)
 	
 			I2C_stop();
 			
@@ -120,16 +122,14 @@ ISR(TWI_vect)
 			break;
 
 	}
-	sei();
 }
 
 
 int main()
 {
-//	UART_init(bauddivider);// инициализация UART
+	_delay_ms(100);
 	I2C_init();// инициализация шины TWI
-
-//	_delay_ms(1);	
+	
 	DDRD = 1<<PD5|1<<PD4|1<<PD7;
 	DDRB = 1<<PB3;
 	PORTD = 0<<PD5|0<<PD4|0<<PD7;
@@ -143,13 +143,13 @@ int main()
 		UART_transiever_itoa(Z_TEST&0x1F);	*/
 //	sei();	
 //	I2C_start();
-	LCD_init();
+
 	for(;;)
 	{
 		
 
 		PORTD = 1<<PD5;
-//		_delay_ms(1000);	
+		_delay_ms(1000);	
 		PORTD = 0<<PD5;			
 
 		while(Flag)
@@ -170,6 +170,7 @@ int main()
 
 			if(!is_init)
 			{
+				LCD_init();
 				kursor_adress(FIRST);
 				LCD_write_str("A:000 000 000 t=");	
 				
@@ -203,14 +204,15 @@ int main()
 				kursor_adress(FIFTEENTH_S);
 				LCD_write_str(buffer);
 				_delay_ms(40);
-//				Flag = 0;
-//				I2C_start();
-//				sei();
+				Flag = 0;
+				I2C_start();
+				TWCR &= ~(1<<TWINT);//сброс бита TWINT перед sei() обязателен!!!!!
+				sei();
 		}
 		PORTD = 1<<PD4;
-//		_delay_ms(500);
+		_delay_ms(500);
 		PORTD = 0<<PD4;
-//		_delay_ms(500);
+		_delay_ms(500);
 					
 	}
 	return 0;
