@@ -178,15 +178,15 @@ int main()
 				LCD_write_str("H 0000          ");	
 				is_init = true;		
 			}
-/*
+
 				LCD_alignment(ACCEL_X, THIRD);
 //				LCD_alignment(ACCEL_Y, EIGHTH);
 //				LCD_alignment(ACCEL_Z, THIRTEENTH);
 				LCD_alignment(GYRO_X, THIRD_S);
 //				LCD_alignment(GYRO_Y, EIGHTH_S);
 //				LCD_alignment(GYRO_Z, THIRTEENTH_S);
-*/
-				itoa(ACCEL_X, buffer, 10);
+
+/*				itoa(ACCEL_X, buffer, 10);
 				kursor_adress(THIRD);
 				LCD_write_str(buffer);
 //				itoa(ACCEL_Y, buffer, 10);
@@ -209,7 +209,7 @@ int main()
 //				itoa(TEMPERATURE, buffer, 10);
 //				kursor_adress(FIFTEENTH_S);
 //				LCD_write_str(buffer);
-
+*/
 //				_delay_ms(40);
 				Flag = 0;
 				I2C_start();

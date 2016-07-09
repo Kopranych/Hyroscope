@@ -122,18 +122,25 @@ void LCD_alignment(int16_t str, uint8_t adress)
 			{
 				kursor_adress(adress);
 				LCD_write_str(buffer);
-				LCD_write_str("  ");
+				LCD_write_str("     ");
 			}
 			else if (str > (-100))
 			{
 				kursor_adress(adress);
 				LCD_write_str(buffer);
-				LCD_write_str(" ");
+				LCD_write_str("    ");
 			}
-			else if (str <= (-100))
+			else if (str  >(-1000))
 			{
 				kursor_adress(adress);
 				LCD_write_str(buffer);
+				LCD_write_str("   ");
+			}
+			else if (str  <=(-1000))
+			{
+				kursor_adress(adress);
+				LCD_write_str(buffer);
+				LCD_write_str("   ");
 			}
 		}
 
@@ -143,17 +150,25 @@ void LCD_alignment(int16_t str, uint8_t adress)
 			{
 				kursor_adress(adress);
 				LCD_write_str(buffer);
-				LCD_write_str("   ");
+				LCD_write_str("     ");
 			}
 			else if (str < 100)
-				kursor_adress(adress);
-				LCD_write_str(buffer);
-				LCD_write_str("  ");
-			if (str >= 100)
 			{
 				kursor_adress(adress);
 				LCD_write_str(buffer);
-				LCD_write_str(" ");
+				LCD_write_str("    ");
+			}
+			else if (str < 1000)
+			{
+				kursor_adress(adress);
+				LCD_write_str(buffer);
+				LCD_write_str("   ");
+			}
+			else if (str >= 1000)
+			{
+				kursor_adress(adress);
+				LCD_write_str(buffer);
+				LCD_write_str("   ");
 			}
 		}
 }
